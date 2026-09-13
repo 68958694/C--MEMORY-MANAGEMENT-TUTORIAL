@@ -1,0 +1,61 @@
+# Demystifying Memory: A Practical Guide to Stack vs. Heap in C
+
+Understanding how a program interacts with physical system hardware is what separates a beginner from a professional C developer. When writing code in C, every variable you declare is mapped to memory in one of two fundamental areas: **The Stack** or **The Heap**.
+
+This repository contains a clean, practical demonstration designed to visualize how these two memory zones operate under the hood, how pointers navigate them, and how to successfully manage memory without causing fatal leaks.
+
+---
+
+## Why Understanding Memory Matters
+
+In higher-level languages like Python or JavaScript, a garbage collector automatically cleans up unused variables. In C, **you are the garbage collector**. Mismanaging memory directly leads to:
+* **Segmentation Faults:** Crashing your application by accessing restricted memory areas.
+* **Memory Leaks:** Consuming system RAM indefinitely until the operating system forces your program to terminate.
+
+---
+
+## Deep Dive into the Code Mechanics
+
+The code inside `main.c` separates memory allocation into two core scenarios.
+
+### 1. Automatic Management: The Stack
+The Stack is managed automatically by the CPU. When a function executes, it instantly reserves space to hold local variables.
+
+* **How it works:** Variables like `local_score` are allocated instantly. 
+* **The Lifetime:** The moment the function finishes running and hits its closing brace, the memory is automatically recycled. You do not need to clean it up manually.
+
+### 2. Manual Control: The Heap
+The Heap is a large pool of system memory. Unlike the Stack, variables allocated on the Heap persist across functions until you explicitly tell the CPU to remove them.
+
+* **How it works:** We use `malloc()` (Memory Allocation) to request a specific size of bytes on the Heap. `malloc()` returns a raw memory address, which we store inside a pointer variable.
+* **The Pointer Twist:** The pointer variable itself lives on the Stack, but the address it holds points directly to an isolated location out on the Heap.
+
+### The Lifecycle Rule: Allocating and Freeing
+Because the Heap operates independently, executing `malloc()` requires a matching `free()` operation to clean it up. If you forget to call `free()`, that block of memory remains locked out even after your program moves on to other tasks.
+
+---
+
+## How to Compile and Run This Project
+
+To compile and verify this code locally on your Linux or macOS machine, use the standard `gcc` compiler:
+
+```bash
+# Compile the source code into an executable named memory_demo
+gcc main.c -o memory_demo
+
+# Execute the compiled binary
+./memory_demo
+```
+
+### Expected Terminal Output
+When run, the program highlights how distinct the memory addresses are for stack versus heap space:
+```text
+--- Quick Memory Test ---
+
+[Stack Data] Address: 0x7ffeefbff4dc | Value: 99
+[Pointer Variable] Lives on Stack at: 0x7ffeefbff4d0
+[Actual Heap Data] Points to address: 0x7fa89bc028b0 | Value: 4005
+
+--- Test Finished Cleanly ---
+```
+Notice how the Stack addresses (`0x7ffe...`) and the Heap address (`0x7fa8...`) are placed in completely different segments of system RAM.
