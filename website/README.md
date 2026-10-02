@@ -16,6 +16,7 @@ website/
 ├── js/hero-globe.js    # 3D hero (built file, do not edit by hand)
 ├── js/src/             # 3D hero source + world land mask
 ├── package.json        # only used to rebuild the 3D hero
+├── tools/build-embeds.py  # builds the single-file and WordPress versions into dist/
 └── assets/
     ├── favicon.svg
     ├── apple-touch-icon.png
@@ -48,7 +49,14 @@ Destinations, colours and the route timing are at the top of the source file.
 
 Upload the contents of `website/` (everything except `node_modules/`, `js/src/` and `package.json`, which are only for rebuilding) to the web root of the hosting (for example `public_html/` in cPanel) so `index.html` is served at `https://growthandbeyond.in/`. It also works as-is on Netlify, Vercel, Cloudflare Pages or GitHub Pages.
 
-The current site runs on WordPress. If the client wants to keep editing in WordPress, this design can serve as the reference for an Elementor rebuild instead.
+### On the existing WordPress site (no hosting access needed)
+
+`python3 tools/build-embeds.py` writes two single-file builds to `dist/`:
+
+- `Growth-and-Beyond-Website.html`: the whole site in one file, for previews (double-click to open).
+- `homepage-for-wordpress.html`: a paste-in block. Every style is scoped under `#gb-site`, so the theme and Elementor kit styles can't override it, and it stretches to full width inside a boxed container.
+
+To install it: in WordPress create a page, open it in Elementor, set **Page Layout → Elementor Canvas**, add an **HTML** widget and paste in `homepage-for-wordpress.html`. Publish, then set it as the homepage under **Settings → Reading**. The old homepage is untouched, so switching back is one setting. Clear any cache plugin afterwards, and exclude the page from "delay/combine JavaScript" if the globe doesn't appear.
 
 ## Sections
 
