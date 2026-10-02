@@ -153,10 +153,23 @@
       el.addEventListener('pointerleave', () => { el.style.translate = ''; });
     });
 
+    // 3D tilt toward the pointer
+    $$('.spotlight, .feature, .admission-card').forEach((el) => {
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        const angle = Math.min(1, Math.hypot(x, y) * 2) * 7;
+        el.style.rotate = `${(-y).toFixed(3)} ${x.toFixed(3)} 0 ${angle.toFixed(2)}deg`;
+      });
+      el.addEventListener('pointerleave', () => { el.style.rotate = ''; });
+    });
+
     const hero = $('.hero');
     const visual = $('.hero__visual');
     if (hero && visual) {
       hero.addEventListener('pointermove', (e) => {
+        if (visual.classList.contains('has-3d')) return; // the 3D scene handles its own parallax
         const r = hero.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width - 0.5;
         const y = (e.clientY - r.top) / r.height - 0.5;

@@ -6,7 +6,7 @@
   <title>Growth &amp; Beyond | Career Counselling &amp; Study Abroad in Chennai</title>
   <meta name="description" content="Psychology-backed career counselling, study abroad and Indian admissions guidance in Chennai. 20+ years of expertise helping students and families choose the right career and university with confidence.">
   <link rel="canonical" href="https://growthandbeyond.in/">
-  <meta name="theme-color" content="#070b18">
+  <meta name="theme-color" content="#061430">
   <meta name="color-scheme" content="dark light">
 
   <!-- Link previews on WhatsApp, Instagram, LinkedIn and Facebook -->
@@ -15,7 +15,7 @@
   <meta property="og:title" content="Growth &amp; Beyond | Better careers, brighter world">
   <meta property="og:description" content="Career counselling, study abroad and Indian admissions guidance from Chennai, with 20+ years of expertise.">
   <meta property="og:url" content="https://growthandbeyond.in/">
-  <meta property="og:image" content="https://growthandbeyond.in/assets/og-image.png">
+  <meta property="og:image" content="https://growthandbeyond.in/assets/og-image.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:locale" content="en_IN">
@@ -23,7 +23,7 @@
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="preload" href="assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/poppins-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/styles.css">
 
@@ -37,7 +37,7 @@
     "alternateName": "Growth and Beyond",
     "url": "https://growthandbeyond.in/",
     "logo": "https://growthandbeyond.in/assets/favicon.svg",
-    "image": "https://growthandbeyond.in/assets/og-image.png",
+    "image": "https://growthandbeyond.in/assets/og-image.jpg",
     "description": "Career counselling, study abroad and Indian admissions guidance based in Chennai.",
     "telephone": "+91-8438677808",
     "email": "growth.beyondcca@gmail.com",
@@ -60,15 +60,39 @@
   <!-- Shared SVG definitions -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <defs>
-      <linearGradient id="gold-grad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#f7e7bc"/>
-        <stop offset=".5" stop-color="#d6b16a"/>
-        <stop offset="1" stop-color="#9a7333"/>
+      <linearGradient id="gb-arrow" x1="0" y1="1" x2="1" y2="0">
+        <stop offset="0" stop-color="#14652b"/>
+        <stop offset=".55" stop-color="#2a9a43"/>
+        <stop offset="1" stop-color="#46c35f"/>
       </linearGradient>
-      <symbol id="logo-mark" viewBox="0 0 40 40">
-        <path d="M33 20A13 13 0 1 1 20 7" fill="none" stroke="url(#gold-grad)" stroke-width="2.6" stroke-linecap="round"/>
-        <path d="M13.5 26.5 33 7" fill="none" stroke="url(#gold-grad)" stroke-width="2.6" stroke-linecap="round"/>
-        <path d="M24 7h9v9" fill="none" stroke="url(#gold-grad)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <radialGradient id="gb-globe" cx=".38" cy=".32" r=".8">
+        <stop offset="0" stop-color="#1f4fa8"/>
+        <stop offset="1" stop-color="#0c2560"/>
+      </radialGradient>
+      <clipPath id="gb-clip"><circle cx="52" cy="58" r="29"/></clipPath>
+      <!-- Logo mark: graduation cap on a globe with the growth arrow (vector redraw of the client logo) -->
+      <symbol id="logo-mark" viewBox="0 0 100 92">
+        <circle cx="52" cy="58" r="31" style="fill:var(--logo-ring,#0b1f4d)"/>
+        <circle cx="52" cy="58" r="29" fill="url(#gb-globe)"/>
+        <g clip-path="url(#gb-clip)">
+          <path d="M52 58 L90 40 L90 100 L52 100Z" fill="#2a9a43" opacity=".55"/>
+          <g fill="none" stroke="#45b4ee" stroke-width="2.2">
+            <ellipse cx="52" cy="58" rx="12" ry="29"/>
+            <ellipse cx="52" cy="58" rx="23" ry="29"/>
+            <path d="M23 48 Q52 41 81 48"/>
+            <path d="M23 58 Q52 52 81 58"/>
+            <path d="M24 69 Q52 63 80 69"/>
+            <path d="M52 29 V87"/>
+          </g>
+        </g>
+        <path d="M24 46 V36 Q38 31 52 36 V46 Q38 41 24 46Z" style="fill:var(--logo-cap-dark,#0b1a3a)"/>
+        <path d="M24 44.5 Q38 39.5 52 44.5 V47 Q38 42 24 47Z" fill="#45b4ee"/>
+        <path d="M4 27 L38 14 L72 26 L38 39Z" style="fill:var(--logo-cap,#0d1d40)"/>
+        <path d="M4 27 L38 39 L72 26 L72 28.6 L38 41.6 L4 29.6Z" fill="#e8f4fb"/>
+        <path d="M38 26.5 L10 29.5 V45" fill="none" style="stroke:var(--logo-cap-dark,#0b1a3a)" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M8 44 h4 l1 9 h-6z" style="fill:var(--logo-cap-dark,#0b1a3a)"/>
+        <path d="M26 70 Q50 64 64 46 T86 13" fill="none" stroke="url(#gb-arrow)" stroke-width="6.5" stroke-linecap="round"/>
+        <path d="M77 12 L95 4 L90 23Z" fill="#46c35f"/>
       </symbol>
       <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
       <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
@@ -83,7 +107,7 @@
     <div class="container nav">
       <a href="#top" class="brand" aria-label="Growth &amp; Beyond home">
         <svg class="brand__mark" aria-hidden="true"><use href="#logo-mark"/></svg>
-        <span class="brand__name">Growth <em>&amp;</em> Beyond</span>
+        <span class="brand__text"><span class="brand__growth">Growth</span><span class="brand__beyond">&amp; Beyond</span><span class="brand__tag">Empowering Futures Together</span></span>
       </a>
 
       <nav class="nav__links" aria-label="Primary">
@@ -95,7 +119,7 @@
         <a href="#contact">Contact</a>
       </nav>
 
-      <a href="https://forms.office.com/r/34mwJ1s8q7?origin=lprLink" target="_blank" rel="noopener" class="btn btn--gold btn--sm nav__cta magnetic">Book Pre-Counselling</a>
+      <a href="https://forms.office.com/r/34mwJ1s8q7?origin=lprLink" target="_blank" rel="noopener" class="btn btn--primary btn--sm nav__cta magnetic">Book Pre-Counselling</a>
 
       <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
         <span></span><span></span>
@@ -112,15 +136,15 @@
       <a href="#counsellor">Counsellor</a>
       <a href="#contact">Contact</a>
     </nav>
-    <a href="https://forms.office.com/r/34mwJ1s8q7?origin=lprLink" target="_blank" rel="noopener" class="btn btn--gold">Book a Pre-Counselling</a>
+    <a href="https://forms.office.com/r/34mwJ1s8q7?origin=lprLink" target="_blank" rel="noopener" class="btn btn--primary">Book a Pre-Counselling</a>
   </div>
 
   <main id="main">
     <!-- ============ HERO ============ -->
     <section class="hero">
       <div class="hero__bg" aria-hidden="true">
-        <span class="orb orb--gold"></span>
-        <span class="orb orb--plum"></span>
+        <span class="orb orb--sky"></span>
+        <span class="orb orb--green"></span>
         <span class="orb orb--small"></span>
         <div class="grid-lines"></div>
       </div>
@@ -131,13 +155,13 @@
 
           <h1 class="hero__title">
             <span class="line"><span>Better careers,</span></span>
-            <span class="line"><span><em class="text-gold">brighter</em> world.</span></span>
+            <span class="line"><span><em class="text-accent swoosh">brighter</em> world.</span></span>
           </h1>
 
           <p class="hero__lead">Psychology-backed career counselling and study-abroad guidance with over 20 years of expertise, helping students and families choose the right path with clarity and confidence.</p>
 
           <div class="hero__actions">
-            <a href="https://forms.office.com/r/34mwJ1s8q7?origin=lprLink" target="_blank" rel="noopener" class="btn btn--gold btn--lg magnetic">
+            <a href="https://forms.office.com/r/34mwJ1s8q7?origin=lprLink" target="_blank" rel="noopener" class="btn btn--primary btn--lg magnetic">
               Book a Pre-Counselling
               <svg class="btn__icon" aria-hidden="true"><use href="#i-arrow"/></svg>
             </a>
@@ -151,8 +175,9 @@
           </ul>
         </div>
 
-        <!-- Decorative visual -->
+        <!-- 3D globe (js/hero-globe.js); the orbit below is the fallback without WebGL -->
         <div class="hero__visual" aria-hidden="true">
+          <div class="globe3d"><canvas></canvas><div class="globe3d__labels"></div></div>
           <div class="orbit">
             <span class="ring ring--1"><b class="pin" style="--a:20deg"><span>UK</span></b><b class="pin" style="--a:200deg"><span>USA</span></b></span>
             <span class="ring ring--2"><b class="pin" style="--a:110deg"><span>Canada</span></b><b class="pin" style="--a:290deg"><span>Germany</span></b></span>
@@ -195,7 +220,7 @@
       <div class="container about__grid">
         <div class="about__copy">
           <p class="eyebrow" data-reveal>About us</p>
-          <h2 class="h2" data-reveal style="--d:.08s">Making dreams &amp; aspirations come <em class="text-gold">true.</em></h2>
+          <h2 class="h2" data-reveal style="--d:.08s">Making dreams &amp; aspirations come <em class="text-accent">true.</em></h2>
           <p class="section__lead" data-reveal style="--d:.16s">We're your trusted partners in unlocking limitless potential, whether you're charting a bold career path or chasing dreams abroad.</p>
           <p data-reveal style="--d:.2s">With over 20 years of expertise fused with psychology, we blend data-driven insights, personalised counselling and insider knowledge of top global universities to guide you beyond boundaries. From crafting standout applications to navigating visas and scholarships, our Chennai-based team helps you thrive in a fast-evolving world.</p>
           <p class="about__sign" data-reveal style="--d:.24s">Let's turn your ambitions into achievements. <em>Your growth story starts here.</em></p>
@@ -231,7 +256,7 @@
       <div class="container">
         <div class="section__head">
           <p class="eyebrow" data-reveal>What we offer</p>
-          <h2 class="h2" data-reveal style="--d:.08s">Guidance for every step of your <em class="text-gold">journey.</em></h2>
+          <h2 class="h2" data-reveal style="--d:.08s">Guidance for every step of your <em class="text-accent">journey.</em></h2>
           <p class="section__lead" data-reveal style="--d:.16s">From choosing a stream to landing at your dream university, we stay with you at every decision.</p>
         </div>
 
@@ -288,7 +313,7 @@
       <div class="container">
         <div class="section__head section__head--center">
           <p class="eyebrow" data-reveal>Why choose us</p>
-          <h2 class="h2" data-reveal style="--d:.08s">Clarity, confidence and care, <em class="text-gold">built in.</em></h2>
+          <h2 class="h2" data-reveal style="--d:.08s">Clarity, confidence and care, <em class="text-accent">built in.</em></h2>
         </div>
 
         <ul class="features">
@@ -331,7 +356,7 @@
       <div class="container">
         <div class="section__head section__head--center">
           <p class="eyebrow" data-reveal>How it works</p>
-          <h2 class="h2" data-reveal style="--d:.08s">Your path from confusion to <em class="text-gold">clarity.</em></h2>
+          <h2 class="h2" data-reveal style="--d:.08s">Your path from confusion to <em class="text-accent">clarity.</em></h2>
         </div>
 
         <ol class="steps">
@@ -371,7 +396,7 @@
         <div class="section__head section__head--split">
           <div>
             <p class="eyebrow" data-reveal>Study abroad</p>
-            <h2 class="h2" data-reveal style="--d:.08s">Your journey <em class="text-gold">beyond</em> borders.</h2>
+            <h2 class="h2" data-reveal style="--d:.08s">Your journey <em class="text-accent">beyond</em> borders.</h2>
           </div>
           <p class="section__lead" data-reveal style="--d:.16s">Studying abroad opens doors to global opportunities, cultural exchange and personal growth. Beyond the degree, it builds the resilience, confidence and worldview that employers value.</p>
         </div>
@@ -417,7 +442,7 @@
 
         <div class="journey">
           <div class="journey__head" data-reveal>
-            <h3>Your study abroad journey, in <em class="text-gold">8 steps.</em></h3>
+            <h3>Your study abroad journey, in <em class="text-accent">8 steps.</em></h3>
             <p>A dedicated counsellor guides you through every one of them.</p>
           </div>
           <ol class="journey__steps">
@@ -450,7 +475,7 @@
       <div class="container">
         <div class="section__head">
           <p class="eyebrow" data-reveal>Indian admissions</p>
-          <h2 class="h2" data-reveal style="--d:.08s">Your gateway to <em class="text-gold">quality</em> education.</h2>
+          <h2 class="h2" data-reveal style="--d:.08s">Your gateway to <em class="text-accent">quality</em> education.</h2>
           <p class="section__lead" data-reveal style="--d:.16s">Expert guidance for admissions to leading universities, colleges and institutions in India, along with accredited online programmes worldwide.</p>
         </div>
 
@@ -510,7 +535,7 @@
 
         <div class="counsellor__copy">
           <p class="eyebrow" data-reveal>Know your counsellor</p>
-          <h2 class="h2" data-reveal style="--d:.08s">Waheedha <em class="text-gold">Begum</em></h2>
+          <h2 class="h2" data-reveal style="--d:.08s">Waheedha <em class="text-accent">Begum</em></h2>
           <p class="counsellor__role" data-reveal style="--d:.12s">Career Counsellor · Growth &amp; Beyond</p>
           <p class="section__lead" data-reveal style="--d:.16s">With over 20 years of experience, guiding students and professionals toward meaningful careers with clarity, confidence and personalised support.</p>
           <p class="counsellor__bio" data-reveal style="--d:.2s">Her expertise spans education systems, industry trends and global opportunities. She combines scientific assessments, practical insights and empathetic one-on-one guidance so every individual discovers the path best suited to their strengths, whether that's stream selection, college planning, a career transition or re-entry after a break.</p>
@@ -523,7 +548,7 @@
 
           <blockquote class="counsellor__quote" data-reveal style="--d:.28s">“Better careers don't just change lives, they create a better world for all.”</blockquote>
 
-          <a href="https://growthbeyond.edumilestones.com/career-counsellor/Waheedha-Begum" target="_blank" rel="noopener" class="btn btn--gold btn--lg magnetic" data-reveal style="--d:.32s">
+          <a href="https://growthbeyond.edumilestones.com/career-counsellor/Waheedha-Begum" target="_blank" rel="noopener" class="btn btn--primary btn--lg magnetic" data-reveal style="--d:.32s">
             Book an appointment
             <svg class="btn__icon" aria-hidden="true"><use href="#i-arrow"/></svg>
           </a>
@@ -550,11 +575,11 @@
       <div class="container">
         <div class="cta-band" data-reveal>
           <span class="cta-band__glow" aria-hidden="true"></span>
-          <p class="eyebrow eyebrow--center">Better careers, brighter world</p>
-          <h2 class="cta-band__title">Your growth story starts <em class="text-gold">here.</em></h2>
+          <p class="eyebrow eyebrow--center">Empowering futures together</p>
+          <h2 class="cta-band__title">Your growth story starts <em class="text-accent">here.</em></h2>
           <p class="cta-band__lead">Book a pre-counselling session and take your first confident step toward the right career or university.</p>
           <div class="cta-band__actions">
-            <a href="https://forms.office.com/r/34mwJ1s8q7?origin=lprLink" target="_blank" rel="noopener" class="btn btn--gold btn--lg magnetic">
+            <a href="https://forms.office.com/r/34mwJ1s8q7?origin=lprLink" target="_blank" rel="noopener" class="btn btn--primary btn--lg magnetic">
               Book a Pre-Counselling
               <svg class="btn__icon" aria-hidden="true"><use href="#i-arrow"/></svg>
             </a>
@@ -568,11 +593,11 @@
     </section>
 
     <!-- ============ FAQ ============ -->
-    <section class="section faq" id="faq">
+    <section class="section section--light faq" id="faq">
       <div class="container faq__grid">
         <div>
           <p class="eyebrow" data-reveal>FAQ</p>
-          <h2 class="h2" data-reveal style="--d:.08s">Questions, <em class="text-gold">answered.</em></h2>
+          <h2 class="h2" data-reveal style="--d:.08s">Questions, <em class="text-accent">answered.</em></h2>
           <p class="section__lead" data-reveal style="--d:.16s">Something else on your mind? <a href="#contact" class="link">Talk to us directly.</a></p>
         </div>
 
@@ -606,11 +631,11 @@
     </section>
 
     <!-- ============ CONTACT ============ -->
-    <section class="section contact" id="contact">
+    <section class="section section--light contact" id="contact">
       <div class="container contact__grid">
         <div class="contact__info">
           <p class="eyebrow" data-reveal>Contact us</p>
-          <h2 class="h2" data-reveal style="--d:.08s">Let's plan your <em class="text-gold">future.</em></h2>
+          <h2 class="h2" data-reveal style="--d:.08s">Let's plan your <em class="text-accent">future.</em></h2>
           <p class="section__lead" data-reveal style="--d:.16s">Tell us a little about yourself and we'll get back to you. Prefer to talk? Call or WhatsApp us anytime.</p>
 
           <ul class="contact__list" data-reveal style="--d:.24s">
@@ -673,7 +698,7 @@
             <label for="f-message">How can we help?</label>
             <textarea id="f-message" name="message" rows="4" placeholder="Tell us about your goals or questions"></textarea>
           </div>
-          <button type="submit" class="btn btn--gold btn--lg btn--block magnetic">
+          <button type="submit" class="btn btn--primary btn--lg btn--block magnetic">
             <svg class="btn__icon btn__icon--wa" aria-hidden="true"><use href="#i-whatsapp"/></svg>
             Send on WhatsApp
           </button>
@@ -690,7 +715,7 @@
       <div class="footer__brand">
         <a href="#top" class="brand" aria-label="Back to top">
           <svg class="brand__mark" aria-hidden="true"><use href="#logo-mark"/></svg>
-          <span class="brand__name">Growth <em>&amp;</em> Beyond</span>
+          <span class="brand__text"><span class="brand__growth">Growth</span><span class="brand__beyond">&amp; Beyond</span><span class="brand__tag">Empowering Futures Together</span></span>
         </a>
         <p>Better careers, brighter world. Career counselling, study abroad and Indian admissions from Chennai.</p>
         <div class="socials">
@@ -740,5 +765,6 @@
   </a>
 
   <script src="js/main.js" defer></script>
+  <script type="module" src="js/hero-globe.js"></script>
 </body>
 </html>

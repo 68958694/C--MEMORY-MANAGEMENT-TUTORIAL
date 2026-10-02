@@ -2,7 +2,9 @@
 
 A single-page redesign of [growthandbeyond.in](https://growthandbeyond.in/), a career counselling, study abroad and Indian admissions practice in Royapettah, Chennai.
 
-Plain HTML, CSS and JavaScript. No build step, no frameworks, no third-party requests: fonts are self-hosted.
+Plain HTML, CSS and JavaScript with no frameworks and no third-party requests (fonts are self-hosted). The colours, typeface and imagery follow the logo: navy blue, growth green and sky blue, with the graduation cap, globe and growth arrow.
+
+The hero is a 3D scene built with three.js: a dotted globe, a 3D graduation cap and the green growth arrow (the logo in 3D), with study-abroad routes flying out of Chennai. It reacts to the mouse and to scrolling, pauses when off screen, and falls back to a static graphic when WebGL or motion is unavailable.
 
 ## Structure
 
@@ -10,12 +12,15 @@ Plain HTML, CSS and JavaScript. No build step, no frameworks, no third-party req
 website/
 ├── index.html          # all content and sections
 ├── css/styles.css      # design system + layout (tokens at the top)
-├── js/main.js          # menu, scroll reveals, counters, WhatsApp form
+├── js/main.js          # menu, scroll reveals, counters, 3D card tilt, WhatsApp form
+├── js/hero-globe.js    # 3D hero (built file, do not edit by hand)
+├── js/src/             # 3D hero source + world land mask
+├── package.json        # only used to rebuild the 3D hero
 └── assets/
     ├── favicon.svg
     ├── apple-touch-icon.png
-    ├── og-image.png    # preview shown when the link is shared on WhatsApp / social
-    └── fonts/          # Fraunces + Manrope (SIL Open Font License)
+    ├── og-image.jpg    # preview shown when the link is shared on WhatsApp / social
+    └── fonts/          # Poppins + Manrope (SIL Open Font License)
 ```
 
 ## Preview locally
@@ -27,15 +32,27 @@ npx http-server -p 8080    # or: python3 -m http.server 8080
 
 Open http://localhost:8080.
 
+## Changing the 3D hero
+
+Edit `js/src/hero-globe.js`, then rebuild the bundled file:
+
+```bash
+cd website
+npm install
+npm run build:globe
+```
+
+Destinations, colours and the route timing are at the top of the source file.
+
 ## Deploy
 
-Upload the contents of `website/` to the web root of the hosting (for example `public_html/` in cPanel) so `index.html` is served at `https://growthandbeyond.in/`. It also works as-is on Netlify, Vercel, Cloudflare Pages or GitHub Pages.
+Upload the contents of `website/` (everything except `node_modules/`, `js/src/` and `package.json`, which are only for rebuilding) to the web root of the hosting (for example `public_html/` in cPanel) so `index.html` is served at `https://growthandbeyond.in/`. It also works as-is on Netlify, Vercel, Cloudflare Pages or GitHub Pages.
 
 The current site runs on WordPress. If the client wants to keep editing in WordPress, this design can serve as the reference for an Elementor rebuild instead.
 
 ## Sections
 
-Hero · Services marquee · About + ratings (91% trust, 96% professionalism, 80% career clarity) · Services · Why choose us · How it works · Study abroad (10 destinations, Bachelors/Masters/Doctoral picker, 8-step journey) · Indian admissions + careers of tomorrow · Know your counsellor · Vision & mission · Call to action · FAQ · Contact · Footer
+3D hero · Services marquee · About + ratings (91% trust, 96% professionalism, 80% career clarity) · Services · Why choose us · How it works · Study abroad (10 destinations, Bachelors/Masters/Doctoral picker, 8-step journey) · Indian admissions + careers of tomorrow · Know your counsellor · Vision & mission · Call to action · FAQ · Contact · Footer
 
 ## Where links go
 
@@ -55,7 +72,7 @@ The WhatsApp number lives in `SITE.whatsapp` at the top of `js/main.js` and in t
 
 - [ ] **Counsellor photo.** Save a professional portrait as `assets/counsellor.jpg` and swap the `WB` placeholder (see the `✎ REPLACE` comment in the counsellor section).
 - [ ] **Counsellor name and title.** "Waheedha Begum, Career Counsellor" is taken from the booking link. Confirm the exact name and title.
-- [ ] **Logo.** The gold arrow mark is a stand-in. If the client has a logo, replace the `logo-mark` symbol in `index.html` and `assets/favicon.svg`.
+- [ ] **Original logo file.** The logo on the site is a vector redraw made from a photo of the screen. Ask for the original (SVG or a large transparent PNG) and replace the `logo-mark` symbol in `index.html` and `assets/favicon.svg`.
 - [ ] **Student count.** The old site shows "100+ students" in its counter but says "thousands of students" in the counsellor bio. This page uses 100+. Confirm the right figure.
 - [ ] **Testimonials.** None are included, since the old site had no actual reviews to reuse. Send real Google reviews or client quotes and a section can be added.
 - [ ] **Certifications.** The old site shows certificate images. Share them to add a credentials strip.

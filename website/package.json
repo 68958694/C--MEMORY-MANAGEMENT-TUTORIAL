@@ -1,0 +1,12 @@
+{
+  "name": "growth-and-beyond-website",
+  "private": true,
+  "description": "Build tooling for the 3D hero only. The site itself is static HTML/CSS/JS.",
+  "scripts": {
+    "build:globe": "esbuild js/src/hero-globe.js --bundle --minify --format=esm --target=es2020 --legal-comments=none --outfile=js/hero-globe.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "three": "^0.186.1"
+  }
+}
