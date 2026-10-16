@@ -1,11 +1,20 @@
-# AI brain (open-ended conversation). Built-in commands work without it.
+# AI brain: Google Gemini (default)
+google-genai>=1.30
+# Optional alternative brain: Anthropic Claude
 anthropic>=1.15.0
 
-# Terminal voice mode: microphone + speech recognition + offline text-to-speech.
-# Not needed for --hud (the browser handles voice) or --text.
+# Google Calendar + Gmail
+google-api-python-client>=2.100
+google-auth-oauthlib>=1.2
+
+# Phone calls and text messages
+twilio>=9.0
+
+# Terminal voice mode: microphone, speech recognition, offline voice.
+# Not needed for --hud (the browser does voice) or --text.
 SpeechRecognition>=3.10
 pyaudio>=0.2.14
 pyttsx3>=2.90
 
-# Optional: CPU / memory / battery in "system status".
+# CPU / memory / battery in "system status"
 psutil>=5.9

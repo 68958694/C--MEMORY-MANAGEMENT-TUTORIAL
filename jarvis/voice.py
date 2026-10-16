@@ -5,11 +5,14 @@ recognizer) and text-to-speech uses `pyttsx3` (offline, uses your OS voices).
 If either is missing, JARVIS falls back to typing / printing.
 """
 
+import threading
+
 from jarvis import config
 
 
 class Voice:
     def __init__(self, speak_aloud: bool = True):
+        self.lock = threading.Lock()  # replies and background updates may speak at once
         self.engine = None
         if speak_aloud:
             try:
@@ -28,10 +31,11 @@ class Voice:
                 self.engine = None
 
     def say(self, text: str) -> None:
-        print(f"\033[96m{config.NAME.upper()}:\033[0m {text}")
-        if self.engine is not None:
-            self.engine.say(text)
-            self.engine.runAndWait()
+        with self.lock:
+            print(f"\033[96m{config.NAME.upper()}:\033[0m {text}")
+            if self.engine is not None:
+                self.engine.say(text)
+                self.engine.runAndWait()
 
 
 class Ears:

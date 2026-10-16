@@ -2,8 +2,8 @@
 
 Each skill is a plain function returning a sentence to speak. `handle_local`
 matches common voice commands directly (fast, works offline, free); `TOOLS`
-exposes the same skills to Claude so it can use them for anything phrased
-differently.
+(in tools.py) exposes the same skills to the AI so it can use them for
+anything phrased differently.
 """
 
 import json
@@ -147,6 +147,17 @@ def open_app(name: str) -> str:
     return f"Opening {name}."
 
 
+def open_path(path) -> None:
+    """Open a file or folder with the system's default app."""
+    if sys.platform.startswith("win"):
+        import os
+        os.startfile(str(path))
+    elif sys.platform == "darwin":
+        subprocess.Popen(["open", str(path)])
+    else:
+        subprocess.Popen(["xdg-open", str(path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
 def remember_note(note: str) -> str:
     memory.remember(note)
     return "Noted. I'll remember that."
@@ -200,7 +211,7 @@ def _lookup(topic: str) -> str | None:
 
 
 def handle_local(text: str) -> str | None:
-    """Return a reply if `text` is a built-in command, else None (hand it to Claude)."""
+    """Return a reply if `text` is a built-in command, else None (hand it to the AI)."""
     cleaned = text.strip().rstrip("?.!")
     for pattern, handler in _COMMANDS:
         m = re.search(pattern, cleaned, re.IGNORECASE)
@@ -209,62 +220,3 @@ def handle_local(text: str) -> str | None:
             if reply is not None:
                 return reply
     return None
-
-
-# --------------------------------------------------------------------------- tools for Claude
-
-
-def _tool(name, description, props=None, required=None):
-    return {
-        "name": name,
-        "description": description,
-        "input_schema": {
-            "type": "object",
-            "properties": props or {},
-            "required": required or [],
-            "additionalProperties": False,
-        },
-    }
-
-
-_STR = {"type": "string"}
-
-TOOLS = [
-    _tool("get_time", "Get the current local time."),
-    _tool("get_date", "Get today's date."),
-    _tool("open_website", "Open a website in the user's browser. Accepts a known site name "
-          "(youtube, gmail, github...) or a domain like example.com.", {"target": _STR}, ["target"]),
-    _tool("google_search", "Search Google in the user's browser.", {"query": _STR}, ["query"]),
-    _tool("play_on_youtube", "Search/play a video or song on YouTube in the user's browser.",
-          {"query": _STR}, ["query"]),
-    _tool("wikipedia_summary", "Get a short Wikipedia summary of a topic.", {"topic": _STR}, ["topic"]),
-    _tool("get_weather", "Get current weather. Leave city empty for the user's location.",
-          {"city": _STR}, []),
-    _tool("system_status", "Report CPU, memory and battery usage of the user's computer."),
-    _tool("open_app", "Launch a desktop application on the user's computer by name.",
-          {"name": _STR}, ["name"]),
-    _tool("remember_note", "Save a note to long-term memory when the user asks you to remember something.",
-          {"note": _STR}, ["note"]),
-    _tool("recall_notes", "Read back everything saved in long-term memory."),
-]
-
-_TOOL_FUNCS = {
-    "get_time": lambda a: tell_time(),
-    "get_date": lambda a: tell_date(),
-    "open_website": lambda a: open_website(a["target"]),
-    "google_search": lambda a: google_search(a["query"]),
-    "play_on_youtube": lambda a: youtube_search(a["query"]),
-    "wikipedia_summary": lambda a: wikipedia_summary(a["topic"]),
-    "get_weather": lambda a: weather(a.get("city", "")),
-    "system_status": lambda a: system_status(),
-    "open_app": lambda a: open_app(a["name"]),
-    "remember_note": lambda a: remember_note(a["note"]),
-    "recall_notes": lambda a: recall_notes(),
-}
-
-
-def run_tool(name: str, args: dict) -> str:
-    func = _TOOL_FUNCS.get(name)
-    if func is None:
-        raise ValueError(f"Unknown tool: {name}")
-    return func(args or {})

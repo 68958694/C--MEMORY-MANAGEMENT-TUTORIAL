@@ -108,11 +108,12 @@
       Try saying:<br>
       <b>"What's the time?"</b><br>
       <b>"Open YouTube"</b><br>
-      <b>"Play lo-fi beats"</b><br>
-      <b>"Weather in London"</b><br>
-      <b>"Who is Nikola Tesla?"</b><br>
-      <b>"Remember that I parked on level 3"</b><br>
-      <b>"System status"</b>
+      <b>"Build me a landing page for my bakery"</b><br>
+      <b>"Find 5 dental clinics in Austin"</b><br>
+      <b>"Draft an email to the first one"</b><br>
+      <b>"Schedule a call with sam@acme.com Friday 3pm"</b><br>
+      <b>"Business update"</b><br>
+      <b>"Text me the client list"</b>
     </div>
   </aside>
 
@@ -265,9 +266,20 @@ function tick() {
 async function diagnostics() {
   try {
     const s = await (await fetch("/api/status")).json();
-    $("sys").textContent = s.status + (s.ai ? " AI core: online." : " AI core: offline (no API key).");
+    $("sys").textContent = s.status + (s.ai ? ` AI core: ${s.ai} online.` : " AI core: offline (no API key).");
   } catch { $("sys").textContent = "Diagnostics unavailable."; }
 }
+// Briefings and meeting reminders from the background scheduler.
+async function pollUpdates() {
+  if (busy) return;
+  try {
+    const {updates} = await (await fetch("/api/updates")).json();
+    for (const text of updates || []) { addMsg("ai", text); await speak(text); }
+    if (updates && updates.length) setState("idle", "Online");
+  } catch {}
+}
+setInterval(pollUpdates, 15000);
+
 tick(); setInterval(tick, 1000);
 diagnostics(); setInterval(diagnostics, 15000);
 

@@ -5,6 +5,7 @@ needs no audio packages. Use Chrome or Edge for speech recognition.
 """
 
 import json
+import queue
 import threading
 import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -12,12 +13,15 @@ from pathlib import Path
 
 from jarvis import config, skills
 from jarvis.brain import Brain
+from jarvis.briefing import Scheduler
 
 PAGE = Path(__file__).with_name("hud.html")
 
 
-def serve(brain: Brain) -> None:
-    lock = threading.Lock()  # one conversation, so handle one request at a time
+def serve(brain: Brain, start_updates: bool = True) -> None:
+    updates: queue.Queue = queue.Queue()  # briefings and reminders waiting for the page to speak them
+    if start_updates:
+        Scheduler(announce=updates.put).start()
     allowed_hosts = {f"{h}:{config.HUD_PORT}" for h in (config.HUD_HOST, "localhost", "127.0.0.1")}
 
     class Handler(BaseHTTPRequestHandler):
@@ -27,7 +31,12 @@ def serve(brain: Brain) -> None:
                     "{{TITLE}}", config.USER_TITLE)
                 self._send(200, "text/html; charset=utf-8", body.encode("utf-8"))
             elif self.path == "/api/status":
-                self._json({"status": skills.system_status(), "ai": brain.use_claude})
+                self._json({"status": skills.system_status(), "ai": brain.ai_name})
+            elif self.path == "/api/updates":
+                items = []
+                while not updates.empty():
+                    items.append(updates.get_nowait())
+                self._json({"updates": items})
             else:
                 self._send(404, "text/plain", b"Not found")
 
@@ -45,8 +54,7 @@ def serve(brain: Brain) -> None:
                 text = json.loads(self.rfile.read(length) or b"{}").get("text", "")
             except (ValueError, json.JSONDecodeError):
                 return self._json({"error": "bad request"}, 400)
-            with lock:
-                reply = brain.respond(str(text)[:2000])
+            reply = brain.respond(str(text)[:4000])
             self._json({"reply": reply})
 
         def _json(self, data, code=200):

@@ -3,6 +3,7 @@
     python -m jarvis            # voice mode: say "Jarvis, what's the time?"
     python -m jarvis --text     # type instead of speaking
     python -m jarvis --hud      # Iron Man style web interface in your browser
+    python -m jarvis --google-login   # connect Google Calendar + Gmail (one time)
 """
 
 import argparse
@@ -13,6 +14,7 @@ from datetime import datetime
 
 from jarvis import config
 from jarvis.brain import Brain
+from jarvis.briefing import Scheduler
 from jarvis.voice import Voice
 
 BANNER = r"""
@@ -32,12 +34,6 @@ def greeting() -> str:
     hour = datetime.now().hour
     part = "morning" if hour < 12 else "afternoon" if hour < 18 else "evening"
     return f"Good {part}, {config.USER_TITLE}. {config.NAME} online and at your service."
-
-
-def has_credentials() -> bool:
-    return bool(os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN")
-                or os.environ.get("ANTHROPIC_PROFILE")
-                or os.path.isdir(os.path.expanduser("~/.config/anthropic")))
 
 
 def strip_wake_word(text: str) -> str | None:
@@ -105,23 +101,38 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--hud", action="store_true", help="open the web HUD interface")
     parser.add_argument("--no-wake", action="store_true", help="respond to everything, no wake word needed")
     parser.add_argument("--mute", action="store_true", help="print replies without speaking them")
+    parser.add_argument("--google-login", action="store_true", help="connect Google Calendar and Gmail")
+    parser.add_argument("--no-updates", action="store_true", help="no daily briefing or meeting reminders")
     args = parser.parse_args(argv)
 
     if sys.platform.startswith("win"):
         os.system("")  # enable ANSI colours in the Windows console
 
-    use_claude = has_credentials()
+    if args.google_login:
+        from jarvis import google_services
+        from jarvis.errors import SetupNeeded
+        try:
+            google_services.login()
+            print("Google Calendar and Gmail are connected.")
+        except SetupNeeded as exc:
+            print(exc)
+        return
+
     print(f"\033[96m{BANNER}\033[0m")
-    if not use_claude:
-        print("[brain] No ANTHROPIC_API_KEY found: built-in commands work, open conversation is off.\n"
-              "        Get a key at https://console.anthropic.com and set ANTHROPIC_API_KEY.\n")
-    brain = Brain(use_claude=use_claude)
+    brain = Brain()
+    if brain.backend:
+        print(f"[brain] AI core: {brain.ai_name}")
+    else:
+        print(f"[brain] AI core offline: {brain.error or 'no API key found.'}\n"
+              "        Built-in commands still work. Add GEMINI_API_KEY to your .env file to enable the AI.")
 
     if args.hud:
         from jarvis.hud import serve
-        return serve(brain)
+        return serve(brain, start_updates=not args.no_updates)
 
     voice = Voice(speak_aloud=not args.mute)
+    if not args.no_updates:
+        Scheduler(announce=voice.say).start()
     if args.text:
         run_text(brain, voice)
     else:

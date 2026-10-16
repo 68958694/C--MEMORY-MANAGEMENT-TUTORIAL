@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 .venv/
+
+# Secrets: never commit your API keys
+.env
