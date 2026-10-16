@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{NAME}} HUD</title>
+<style>
+  :root {
+    --bg: #02070d;
+    --cyan: #33e1ff;
+    --cyan-dim: rgba(51, 225, 255, .25);
+    --cyan-faint: rgba(51, 225, 255, .08);
+    --amber: #ffb547;
+    --text: #cdefff;
+    --muted: #6d93a6;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: radial-gradient(ellipse at center, #06202e 0%, var(--bg) 70%);
+    color: var(--text);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+  }
+  body::before { /* scanlines */
+    content: ""; position: fixed; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(51,225,255,.03) 0 1px, transparent 1px 3px);
+  }
+  .hud { display: grid; grid-template-columns: 260px 1fr 340px; height: 100%; gap: 16px; padding: 16px; }
+  .panel {
+    border: 1px solid var(--cyan-dim); background: var(--cyan-faint);
+    clip-path: polygon(0 12px, 12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+    padding: 14px 16px; display: flex; flex-direction: column; min-height: 0;
+  }
+  .panel h2 {
+    margin: 0 0 10px; font-size: 11px; letter-spacing: .25em; color: var(--cyan);
+    font-weight: 600; text-transform: uppercase;
+  }
+  .clock { font-size: 34px; white-space: nowrap; font-weight: 200; color: var(--cyan); letter-spacing: .05em; font-variant-numeric: tabular-nums; }
+  .date { color: var(--muted); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 24px; }
+  .stat { font-size: 13px; line-height: 1.6; color: var(--text); }
+  .hint { font-size: 12px; color: var(--muted); line-height: 1.7; margin-top: auto; }
+  .hint b { color: var(--cyan); font-weight: 500; }
+
+  .core { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; min-width: 0; }
+  .reactor { position: relative; width: min(46vh, 90%); aspect-ratio: 1; cursor: pointer; }
+  .ring { position: absolute; border-radius: 50%; inset: 0; border: 2px solid var(--cyan-dim); }
+  .r1 { border-style: dashed; border-color: var(--cyan); opacity: .5; animation: spin 30s linear infinite; }
+  .r2 { inset: 8%; border-width: 6px; border-color: var(--cyan) transparent var(--cyan) transparent; animation: spin 8s linear infinite reverse; opacity: .7; }
+  .r3 { inset: 18%; border: 1px solid var(--cyan); box-shadow: 0 0 30px var(--cyan-dim), inset 0 0 30px var(--cyan-dim); }
+  .r4 { inset: 26%; border-width: 10px; border-color: transparent var(--cyan) transparent var(--cyan); opacity: .5; animation: spin 4s linear infinite; }
+  .r5 {
+    inset: 36%; border: none;
+    background: radial-gradient(circle, #fff 0%, var(--cyan) 35%, rgba(51,225,255,.15) 70%, transparent 72%);
+    box-shadow: 0 0 60px var(--cyan); animation: pulse 3s ease-in-out infinite;
+  }
+  .label {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    font-size: clamp(11px, 2vh, 18px); letter-spacing: .3em; color: #02121a; font-weight: 700; padding-left: .3em;
+  }
+  .state-listening .r5 { animation: pulse .6s ease-in-out infinite; }
+  .state-listening .r2 { animation-duration: 2s; }
+  .state-thinking .r2, .state-thinking .r4 { animation-duration: .9s; }
+  .state-thinking .r5 { --cyan: var(--amber); background: radial-gradient(circle, #fff 0%, var(--amber) 35%, rgba(255,181,71,.15) 70%, transparent 72%); box-shadow: 0 0 60px var(--amber); }
+  .state-speaking .r5 { animation: pulse .35s ease-in-out infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 0%,100% { transform: scale(.94); opacity: .85; } 50% { transform: scale(1.04); opacity: 1; } }
+
+  .status-line { font-size: 12px; letter-spacing: .3em; color: var(--cyan); text-transform: uppercase; min-height: 1.2em; }
+  form { display: flex; gap: 8px; width: min(560px, 100%); }
+  input[type=text] {
+    flex: 1; background: rgba(0,0,0,.4); border: 1px solid var(--cyan-dim); color: var(--text);
+    padding: 12px 14px; font-size: 15px; outline: none; border-radius: 2px;
+  }
+  input[type=text]:focus { border-color: var(--cyan); box-shadow: 0 0 12px var(--cyan-dim); }
+  button {
+    background: transparent; color: var(--cyan); border: 1px solid var(--cyan); padding: 0 16px;
+    font-size: 12px; letter-spacing: .2em; text-transform: uppercase; cursor: pointer; border-radius: 2px;
+  }
+  button:hover, button.on { background: var(--cyan); color: #02121a; }
+  .toggles { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .toggles button { padding: 8px 14px; }
+
+  .log { overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 4px; flex: 1; }
+  .msg { font-size: 14px; line-height: 1.5; }
+  .msg .who { font-size: 10px; letter-spacing: .25em; display: block; margin-bottom: 2px; }
+  .msg.you .who { color: var(--amber); }
+  .msg.ai .who { color: var(--cyan); }
+
+  @media (max-width: 900px) {
+    body { overflow: auto; }
+    .hud { grid-template-columns: 1fr; height: auto; padding: 16px; }
+    .left { display: none; }
+    .right { max-height: 50vh; }
+    .reactor { width: min(70vw, 340px); }
+  }
+</style>
+</head>
+<body>
+<div class="hud">
+  <aside class="panel left">
+    <h2>System</h2>
+    <div class="clock" id="clock">--:--</div>
+    <div class="date" id="date"></div>
+    <h2>Diagnostics</h2>
+    <div class="stat" id="sys">Scanning...</div>
+    <div class="hint">
+      Try saying:<br>
+      <b>"What's the time?"</b><br>
+      <b>"Open YouTube"</b><br>
+      <b>"Play lo-fi beats"</b><br>
+      <b>"Weather in London"</b><br>
+      <b>"Who is Nikola Tesla?"</b><br>
+      <b>"Remember that I parked on level 3"</b><br>
+      <b>"System status"</b>
+    </div>
+  </aside>
+
+  <main class="core">
+    <div class="reactor" id="reactor" title="Click to talk">
+      <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+      <div class="ring r4"></div><div class="ring r5"></div>
+      <div class="label">{{NAME}}</div>
+    </div>
+    <div class="status-line" id="status">Online</div>
+    <form id="form" autocomplete="off">
+      <input type="text" id="input" placeholder="Type a command, or click the reactor to speak...">
+      <button type="submit">Send</button>
+    </form>
+    <div class="toggles">
+      <button type="button" id="wakeBtn" title="Keep listening for the wake word">Wake word: off</button>
+      <button type="button" id="muteBtn">Voice: on</button>
+    </div>
+  </main>
+
+  <aside class="panel right">
+    <h2>Transcript</h2>
+    <div class="log" id="log"></div>
+  </aside>
+</div>
+
+<script>
+const NAME = "{{NAME}}".toLowerCase();
+const TITLE = "{{TITLE}}";
+const $ = id => document.getElementById(id);
+const reactor = $("reactor"), statusEl = $("status"), log = $("log");
+let muted = false, wakeMode = false, busy = false, recognizing = false;
+
+function setState(state, text) {
+  reactor.className = "reactor state-" + state;
+  statusEl.textContent = text;
+}
+
+function addMsg(who, text) {
+  const div = document.createElement("div");
+  div.className = "msg " + (who === "you" ? "you" : "ai");
+  const label = document.createElement("span");
+  label.className = "who";
+  label.textContent = who === "you" ? "YOU" : NAME.toUpperCase();
+  div.append(label, document.createTextNode(text));
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function pickVoice() {
+  const voices = speechSynthesis.getVoices();
+  return voices.find(v => /en-GB/i.test(v.lang) && /male|daniel|george|arthur/i.test(v.name))
+      || voices.find(v => /en-GB/i.test(v.lang))
+      || voices.find(v => /^en/i.test(v.lang));
+}
+
+function speak(text) {
+  return new Promise(resolve => {
+    if (muted || !("speechSynthesis" in window)) return resolve();
+    const u = new SpeechSynthesisUtterance(text);
+    const v = pickVoice(); if (v) u.voice = v;
+    u.rate = 1.02; u.pitch = 0.9;
+    u.onend = u.onerror = resolve;
+    setState("speaking", "Speaking");
+    speechSynthesis.speak(u);
+  });
+}
+
+async function ask(text) {
+  text = text.trim();
+  if (!text || busy) return;
+  busy = true;
+  if (recognizing) rec.stop();  // don't let JARVIS hear its own voice
+  addMsg("you", text);
+  setState("thinking", "Processing");
+  let reply;
+  try {
+    const res = await fetch("/api/ask", {
+      method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({text})
+    });
+    reply = (await res.json()).reply || `Something went wrong, ${TITLE}.`;
+  } catch {
+    reply = "I've lost contact with my core systems. Is the server still running?";
+  }
+  addMsg("ai", reply);
+  await speak(reply);
+  busy = false;
+  setState("idle", wakeMode ? `Say "${NAME}"...` : "Online");
+  if (wakeMode) startListening();
+}
+
+// ---- Speech recognition (Chrome / Edge) ----
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null;
+if (SR) {
+  rec = new SR();
+  rec.lang = "en-US";
+  rec.interimResults = false;
+  rec.onstart = () => { recognizing = true; if (!busy) setState("listening", wakeMode ? `Say "${NAME}"...` : "Listening"); };
+  rec.onend = () => { recognizing = false; if (!busy) { setState("idle", "Online"); if (wakeMode) setTimeout(startListening, 250); } };
+  rec.onerror = e => { if (e.error === "not-allowed") { wakeMode = false; updateWakeBtn(); statusEl.textContent = "Microphone blocked"; } };
+  rec.onresult = e => {
+    let heard = e.results[e.results.length - 1][0].transcript.trim();
+    if (wakeMode) {
+      const m = heard.toLowerCase().match(new RegExp(`\\b(?:hey |ok )?${NAME}\\b[,.!]?\\s*(.*)`));
+      if (!m) return;
+      heard = m[1] || "";
+      if (!heard) { speak(`Yes, ${TITLE}?`); return; }
+    }
+    ask(heard);
+  };
+} else {
+  $("wakeBtn").disabled = true;
+  reactor.title = "Speech recognition needs Chrome or Edge - type instead";
+}
+
+function startListening() {
+  if (!rec || recognizing || busy) return;
+  try { rec.start(); } catch {}
+}
+
+function updateWakeBtn() {
+  $("wakeBtn").textContent = "Wake word: " + (wakeMode ? "on" : "off");
+  $("wakeBtn").classList.toggle("on", wakeMode);
+  rec && (rec.continuous = wakeMode);
+}
+
+reactor.onclick = () => {
+  if (!rec) { statusEl.textContent = "Voice input needs Chrome or Edge"; return; }
+  speechSynthesis.cancel();
+  recognizing ? rec.stop() : startListening();
+};
+$("wakeBtn").onclick = () => {
+  wakeMode = !wakeMode; updateWakeBtn();
+  if (recognizing) rec.stop(); else if (wakeMode) startListening();
+};
+$("muteBtn").onclick = () => {
+  muted = !muted; speechSynthesis.cancel();
+  $("muteBtn").textContent = "Voice: " + (muted ? "off" : "on");
+};
+$("form").onsubmit = e => { e.preventDefault(); const t = $("input").value; $("input").value = ""; ask(t); };
+document.addEventListener("keydown", e => { if (e.code === "Space" && document.activeElement !== $("input")) { e.preventDefault(); reactor.click(); } });
+
+// ---- Clock and diagnostics ----
+function tick() {
+  const now = new Date();
+  $("clock").textContent = now.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit", second: "2-digit"});
+  $("date").textContent = now.toLocaleDateString([], {weekday: "long", month: "long", day: "numeric", year: "numeric"});
+}
+async function diagnostics() {
+  try {
+    const s = await (await fetch("/api/status")).json();
+    $("sys").textContent = s.status + (s.ai ? " AI core: online." : " AI core: offline (no API key).");
+  } catch { $("sys").textContent = "Diagnostics unavailable."; }
+}
+tick(); setInterval(tick, 1000);
+diagnostics(); setInterval(diagnostics, 15000);
+
+const hour = new Date().getHours();
+const hello = `Good ${hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening"}, ${TITLE}. ${NAME[0].toUpperCase() + NAME.slice(1)} online. How can I help?`;
+addMsg("ai", hello);
+setState("idle", "Online");
+</script>
+</body>
+</html>
