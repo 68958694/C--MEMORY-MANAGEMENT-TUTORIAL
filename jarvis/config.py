@@ -12,7 +12,7 @@ from pathlib import Path
 def _load_dotenv() -> None:
     for path in (Path.cwd() / ".env", Path.home() / ".jarvis" / ".env"):
         try:
-            lines = path.read_text(encoding="utf-8").splitlines()
+            lines = path.read_text(encoding="utf-8-sig").splitlines()  # -sig: Notepad may add a BOM
         except OSError:
             continue
         for line in lines:

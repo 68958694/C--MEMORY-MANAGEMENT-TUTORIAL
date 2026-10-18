@@ -97,6 +97,9 @@ class GeminiBackend:
             raise AIError("The Gemini package is missing. Run: pip install google-genai") from exc
         if not config.GEMINI_API_KEY:
             raise AIError("GEMINI_API_KEY is not set.")
+        if "paste-your" in config.GEMINI_API_KEY or " " in config.GEMINI_API_KEY:
+            raise AIError("The GEMINI_API_KEY line in your .env file still has the placeholder text or a space in it. "
+                          "Paste your real key right after the equals sign, save, and restart me.")
         self.types, self.errors = types, errors
         self.client = genai.Client(api_key=config.GEMINI_API_KEY)
         self.models = config.GEMINI_MODELS
@@ -184,6 +187,9 @@ def _gemini_error(exc) -> AIError:
         return AIError("Gemini is overloaded right now. Please try again in a moment.")
     if code in (401, 403):
         return AIError("Gemini rejected the API key. Please check GEMINI_API_KEY.")
+    if code == 400 and "API key not valid" in str(getattr(exc, "message", "") or exc):
+        return AIError("Google says the Gemini API key is not valid. Copy a fresh key from "
+                       "aistudio.google.com/apikey into the GEMINI_API_KEY line of your .env file, then restart me.")
     if code == 400:
         return AIError(f"Gemini couldn't process that request: {getattr(exc, 'message', exc)}")
     if isinstance(exc, AIError):
